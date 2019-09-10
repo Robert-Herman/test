@@ -1,0 +1,68 @@
+<!DOCTYPE html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <title></title>
+    <link rel="stylesheet" type="text/css" href="main.css" />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script type="text/javascript" src="group-form.js"></script>
+    <script>
+        var groups = { 
+                        "Account": [{"tax jane": {"irs": {"indictment": ["1","2","3"]}}}, "john"],
+                        "School": ["homework","exams","projects","sally","john"],
+                        "John": ["tax","school"],
+                        "Extra": [{"test": "deed"}, {"sled": "store"}]
+                     };
+        var tasks = {
+                        "Account,0,tax jane,irs": [{"up":"rgb(255, 0, 0)"},
+                                                   {"two":"rgb(0, 255, 0)"},
+                                                   {"the":"rgb(0, 0, 255)"},
+                                                   {"task":"rgb(0, 255, 255)"}]
+                    };
+        $(document).ready(function () {
+            $("#groups > li").clone().appendTo("#parents");
+            $("group-form").attr("data-groups",JSON.stringify(groups));
+            $("group-form").attr("data-tasks",JSON.stringify(tasks));
+            $("group-form").on("send-group", event => { groups = JSON.parse(event.detail.selection); });
+            $("group-form").on("send-task", event => { tasks = JSON.parse(event.detail.selection); });
+            $("group-form").on("send-group send-task", event => {
+                Url = "/user/delete";
+                $.ajax({
+                    url: Url,
+                    type: "POST",
+                }).done(function(data) {
+                    if (data.error) {
+                        //alert("failed");
+                    }
+                    else {
+                        //alert("passed");
+                    }
+                });
+                Url = "/user/update";
+                $.ajax({
+                    url: Url,
+                    data: { groups: JSON.stringify(groups), tasks: JSON.stringify(tasks), id: 0},
+                    type: "POST",
+                }).done(function(data) {
+                    if (data.error) {
+                        //alert("failed");
+                    }
+                    else {
+                        //alert("passed");
+                    }
+                });
+            });
+        });
+    </script>
+</head>
+<body>
+    <!-- <ul id="parents" style="display: block">
+        <li>name 1</li>
+        <li>name 2</li>
+    </ul>
+    <ul id="parents">
+        <li>placeholder</li>
+    </ul> -->
+    <group-form data-groups="empty" data-tasks="empty" data-parents="#parents"></group-form>
+</body>
+</html>
+
